@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useId, useState } from 'react'
 import fitnasticLogo from '../assets/Fitnastic logo.svg'
 
+const NAV_DEFAULTS = {
+  ourTech: 'https://www.supershyft.com/technology.html',
+  about: 'https://www.supershyft.com/our-story.html',
+  contact: 'https://www.supershyft.com/contact-us.html',
+} as const
+
 const nav = {
-  ourTech: import.meta.env.VITE_NAV_OUR_TECH?.trim() || '#',
-  about: import.meta.env.VITE_NAV_ABOUT?.trim() || '#',
-  contact: import.meta.env.VITE_NAV_CONTACT?.trim() || '#',
+  ourTech: import.meta.env.VITE_NAV_OUR_TECH?.trim() || NAV_DEFAULTS.ourTech,
+  about: import.meta.env.VITE_NAV_ABOUT?.trim() || NAV_DEFAULTS.about,
+  contact: import.meta.env.VITE_NAV_CONTACT?.trim() || NAV_DEFAULTS.contact,
 }
 
 const MOBILE_NAV_QUERY = '(max-width: 720px)'
