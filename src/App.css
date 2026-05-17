@@ -258,24 +258,46 @@ body {
 }
 
 .hi-nav__link {
+  position: relative;
+  display: inline-block;
   color: #fff;
   text-decoration: none;
-  padding: 0.2rem 0;
+  padding: 0.2rem 0 0.45rem;
   white-space: nowrap;
   transition: opacity 0.15s ease;
 }
 
-.hi-nav__link:hover {
-  opacity: 0.88;
+.hi-nav__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Figma "Home" hover / active treatment */
+.hi-nav__link:hover,
+.hi-nav__link:focus-visible {
+  opacity: 1;
+}
+
+.hi-nav__link:hover::after,
+.hi-nav__link:focus-visible::after {
+  transform: scaleX(1);
+}
+
 .hi-nav__link--active {
-  position: relative;
   font-weight: 400;
-  text-decoration: underline;
-  text-underline-offset: 6px;
-  text-decoration-thickness: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hi-nav__link::after {
+    transition: none;
+  }
 }
 
 @media (max-width: 720px) {
@@ -362,7 +384,8 @@ body {
   }
 
   .hi-nav__link {
-    padding: 0.88rem 0.72rem;
+    display: block;
+    padding: 0.88rem 0.72rem 0.95rem;
     white-space: normal;
     font-size: 1.02rem;
     border-radius: 10px;
@@ -370,13 +393,24 @@ body {
     transition: background 0.15s ease;
   }
 
+  .hi-nav__link::after {
+    left: 0.72rem;
+    right: 0.72rem;
+    width: auto;
+    bottom: 0.55rem;
+  }
+
+  .hi-nav__link:hover,
+  .hi-nav__link:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
   .hi-nav__link:active {
     background: rgba(255, 255, 255, 0.12);
   }
 
   .hi-nav__link--active {
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.13);
+    background: rgba(255, 255, 255, 0.1);
     box-shadow: inset 3px 0 0 0 var(--color-accent);
     padding-left: 0.85rem;
   }

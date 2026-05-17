@@ -2,14 +2,19 @@ import { useCallback, useEffect, useId, useState } from 'react'
 import fitnasticLogo from '../assets/Fitnastic logo.svg'
 
 const NAV_DEFAULTS = {
+  home: 'https://www.supershyft.com/index.html',
   ourTech: 'https://www.supershyft.com/technology.html',
-  about: 'https://www.supershyft.com/our-story.html',
+  ourStory: 'https://www.supershyft.com/our-story.html',
   contact: 'https://www.supershyft.com/contact-us.html',
 } as const
 
 const nav = {
+  home: import.meta.env.VITE_NAV_HOME?.trim() || NAV_DEFAULTS.home,
   ourTech: import.meta.env.VITE_NAV_OUR_TECH?.trim() || NAV_DEFAULTS.ourTech,
-  about: import.meta.env.VITE_NAV_ABOUT?.trim() || NAV_DEFAULTS.about,
+  ourStory:
+    import.meta.env.VITE_NAV_OUR_STORY?.trim() ||
+    import.meta.env.VITE_NAV_ABOUT?.trim() ||
+    NAV_DEFAULTS.ourStory,
   contact: import.meta.env.VITE_NAV_CONTACT?.trim() || NAV_DEFAULTS.contact,
 }
 
@@ -64,7 +69,7 @@ export function SiteHeader() {
       <div className="hi-hero__inner">
         <div className={`hi-navbar${menuOpen ? ' hi-navbar--menu-open' : ''}`}>
           <div className="hi-navbar__shell">
-            <a className="hi-logo" href="/" aria-label="Health Insights home">
+            <a className="hi-logo" href={nav.home} aria-label="Supershyft home">
               <img src={fitnasticLogo} alt="" width={73} height={72} />
             </a>
             <button
@@ -82,14 +87,14 @@ export function SiteHeader() {
               <span className="hi-nav-toggle__label">{menuOpen ? 'Close menu' : 'Open menu'}</span>
             </button>
             <nav className="hi-nav" id={navId} aria-label="Primary">
-              <a className="hi-nav__link hi-nav__link--active" href="/" onClick={closeMenu}>
+              <a className="hi-nav__link" href={nav.home} onClick={closeMenu}>
                 Home
               </a>
               <a className="hi-nav__link" href={nav.ourTech} onClick={closeMenu}>
                 Our Tech
               </a>
-              <a className="hi-nav__link" href={nav.about} onClick={closeMenu}>
-                About Us
+              <a className="hi-nav__link" href={nav.ourStory} onClick={closeMenu}>
+                Our Story
               </a>
               <a className="hi-nav__link" href={nav.contact} onClick={closeMenu}>
                 Contact Us
