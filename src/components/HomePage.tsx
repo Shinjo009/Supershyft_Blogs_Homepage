@@ -1,6 +1,7 @@
 import { CategoryStrip } from './CategoryStrip'
 import { FeaturedArticle } from './FeaturedArticle'
 import { LatestArticles } from './LatestArticles'
+import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 import { useHomeFeed } from '../hooks/useHomeFeed'
 
@@ -44,6 +45,7 @@ export function HomePage() {
           </>
         )}
       </main>
+      <SiteFooter />
     </div>
   )
 }

@@ -1,22 +1,9 @@
 import { useCallback, useEffect, useId, useState } from 'react'
 import fitnasticLogo from '../assets/Fitnastic logo.svg'
+import { getSiteNav } from '../lib/siteNav'
+import { SiteNavLinks } from './SiteNavLinks'
 
-const NAV_DEFAULTS = {
-  home: 'https://www.supershyft.com/index.html',
-  ourTech: 'https://www.supershyft.com/technology.html',
-  ourStory: 'https://www.supershyft.com/our-story.html',
-  contact: 'https://www.supershyft.com/contact-us.html',
-} as const
-
-const nav = {
-  home: import.meta.env.VITE_NAV_HOME?.trim() || NAV_DEFAULTS.home,
-  ourTech: import.meta.env.VITE_NAV_OUR_TECH?.trim() || NAV_DEFAULTS.ourTech,
-  ourStory:
-    import.meta.env.VITE_NAV_OUR_STORY?.trim() ||
-    import.meta.env.VITE_NAV_ABOUT?.trim() ||
-    NAV_DEFAULTS.ourStory,
-  contact: import.meta.env.VITE_NAV_CONTACT?.trim() || NAV_DEFAULTS.contact,
-}
+const nav = getSiteNav()
 
 const MOBILE_NAV_QUERY = '(max-width: 720px)'
 
@@ -86,20 +73,7 @@ export function SiteHeader() {
               </span>
               <span className="hi-nav-toggle__label">{menuOpen ? 'Close menu' : 'Open menu'}</span>
             </button>
-            <nav className="hi-nav" id={navId} aria-label="Primary">
-              <a className="hi-nav__link" href={nav.home} onClick={closeMenu}>
-                Home
-              </a>
-              <a className="hi-nav__link" href={nav.ourTech} onClick={closeMenu}>
-                Our Tech
-              </a>
-              <a className="hi-nav__link" href={nav.ourStory} onClick={closeMenu}>
-                Our Story
-              </a>
-              <a className="hi-nav__link" href={nav.contact} onClick={closeMenu}>
-                Contact Us
-              </a>
-            </nav>
+            <SiteNavLinks id={navId} ariaLabel="Primary" onLinkClick={closeMenu} />
           </div>
         </div>
         <div className="hi-hero__copy">

@@ -24,6 +24,7 @@ body {
 .hi-page {
   /* Wider main column (~Figma 1391) — less empty space on large screens */
   --hi-layout-max: 1380px;
+  --hi-footer-inner-max: 1360px;
   --color-ink: #111111;
   --color-muted: #6a7282;
   --color-body: #4a5565;
@@ -35,12 +36,23 @@ body {
   --color-card-border: #e8eaef;
   --color-hero-sub: #cbfbf1;
   --color-hero-title: #ffffff;
+  --hi-gradient: linear-gradient(90deg, #cc203b 0%, #fa3a58 100%);
   --font-display: 'DM Sans', system-ui, sans-serif;
   --font-nav: 'Sora', system-ui, sans-serif;
   --font-ui: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   background: #fff;
   color: var(--color-ink);
   font-family: var(--font-ui);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.hi-main {
+  flex: 1;
+  margin: 0 auto;
+  padding-top: clamp(1.75rem, 3vw, 2.25rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
 .hi-shell {
@@ -358,7 +370,7 @@ body {
     border-color: rgba(255, 255, 255, 0.45);
   }
 
-  .hi-nav {
+  .hi-navbar .hi-nav {
     display: none;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -383,7 +395,7 @@ body {
     display: flex;
   }
 
-  .hi-nav__link {
+  .hi-navbar .hi-nav__link {
     display: block;
     padding: 0.88rem 0.72rem 0.95rem;
     white-space: normal;
@@ -393,23 +405,23 @@ body {
     transition: background 0.15s ease;
   }
 
-  .hi-nav__link::after {
+  .hi-navbar .hi-nav__link::after {
     left: 0.72rem;
     right: 0.72rem;
     width: auto;
     bottom: 0.55rem;
   }
 
-  .hi-nav__link:hover,
-  .hi-nav__link:focus-visible {
+  .hi-navbar .hi-nav__link:hover,
+  .hi-navbar .hi-nav__link:focus-visible {
     background: rgba(255, 255, 255, 0.08);
   }
 
-  .hi-nav__link:active {
+  .hi-navbar .hi-nav__link:active {
     background: rgba(255, 255, 255, 0.12);
   }
 
-  .hi-nav__link--active {
+  .hi-navbar .hi-nav__link--active {
     background: rgba(255, 255, 255, 0.1);
     box-shadow: inset 3px 0 0 0 var(--color-accent);
     padding-left: 0.85rem;
@@ -582,12 +594,6 @@ body {
   background: var(--color-accent);
   color: #fff;
   border: none;
-}
-
-.hi-main {
-  margin: 0 auto;
-  padding-top: clamp(1.75rem, 3vw, 2.25rem);
-  padding-bottom: 4rem;
 }
 
 .hi-banner {
@@ -1025,4 +1031,246 @@ body {
 
 .hi-card__byline {
   display: block;
+}
+
+/*
+ * Footer — Figma node 1:55688
+ * Footer shell — top row, divider, copyright (compact bottom spacing)
+ */
+.hi-footer {
+  position: relative;
+  margin-top: auto;
+  overflow: hidden;
+  color: #fff;
+  width: 100%;
+}
+
+.hi-footer__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  pointer-events: none;
+}
+
+.hi-footer__grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: repeating-linear-gradient(
+    -8deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 2px,
+    rgba(255, 255, 255, 0.03) 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+.hi-footer__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 37.44%);
+  pointer-events: none;
+}
+
+.hi-footer__shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 41px 40px 28px;
+  box-sizing: border-box;
+}
+
+.hi-footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  width: 100%;
+  max-width: var(--hi-footer-inner-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hi-footer__rule {
+  display: block;
+  width: 100%;
+  max-width: 1355px;
+  height: 1px;
+  margin: 20px auto 0;
+  flex-shrink: 0;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hi-footer__copy {
+  margin: 14px auto 0;
+  width: 232px;
+  max-width: 100%;
+  font-family: var(--font-nav);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.hi-footer__logo {
+  display: block;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.hi-footer__logo img {
+  display: block;
+  width: 176px;
+  height: 62px;
+  max-width: min(176px, 55vw);
+  height: auto;
+  aspect-ratio: 176 / 62;
+}
+
+/* Footer nav — same links as header (hi-nav__link), Figma gap 54px */
+.hi-nav--footer {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1.25rem, 4vw, 54px);
+}
+
+/* Figma 1:55733 — flex row, 12px gap, items-center */
+.hi-footer__social {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-nav);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+  color: #fff;
+}
+
+.hi-footer__follow {
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: normal;
+}
+
+/* Figma 1:55735 — inline grid; LinkedIn ml 48px from origin, icons 40×40 */
+.hi-footer__icons {
+  display: inline-grid;
+  grid-template-columns: max-content;
+  grid-template-rows: max-content;
+  flex-shrink: 0;
+  line-height: 0;
+  place-items: start;
+  width: 88px;
+  height: 40px;
+}
+
+.hi-footer__gradient-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.hi-footer__icon-link {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  width: 40px;
+  height: 40px;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.hi-footer__icon-link--instagram {
+  margin: 0;
+}
+
+.hi-footer__icon-link--linkedin {
+  margin-left: 48px;
+}
+
+.hi-footer__icon-link svg {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+/* Default: white paths from SVG. Hover: gradient fill on paths only. */
+.hi-footer__icon-path {
+  fill: #fff;
+  transition: fill 0.35s ease;
+}
+
+.hi-footer__icon-link:hover .hi-footer__icon-path,
+.hi-footer__icon-link:focus-visible .hi-footer__icon-path {
+  fill: url(#hi-social-gradient);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hi-footer__icon-path {
+    transition: none;
+  }
+}
+
+@media (min-width: 1100px) {
+  .hi-footer__top {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 281px;
+  }
+
+  .hi-nav--footer {
+    flex: none;
+    justify-content: center;
+    margin: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .hi-footer {
+    min-height: auto;
+  }
+
+  .hi-footer__shell {
+    padding: clamp(1.75rem, 5vw, 2.5rem) clamp(1rem, 3vw, 2rem) max(1.5rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .hi-footer__top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.75rem;
+  }
+
+  .hi-footer__rule {
+    margin-top: 1.5rem;
+  }
+
+  .hi-footer__copy {
+    margin-top: 1.25rem;
+    white-space: normal;
+    max-width: 100%;
+  }
+
+  .hi-nav--footer {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
 }

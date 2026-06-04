@@ -7,6 +7,8 @@ interface ImportMetaEnv {
   readonly VITE_NAV_OUR_STORY: string
   readonly VITE_NAV_ABOUT: string
   readonly VITE_NAV_CONTACT: string
+  readonly VITE_FOOTER_INSTAGRAM: string
+  readonly VITE_FOOTER_LINKEDIN: string
 }
 
 interface ImportMeta {
