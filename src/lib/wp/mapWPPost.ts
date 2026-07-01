@@ -28,8 +28,8 @@ function authorName(post: WPPost): string {
 function formatDate(iso: string): string {
   const d = new Date(iso)
   return d.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
+    month: 'short',
+    day: '2-digit',
     year: 'numeric',
   })
 }
@@ -59,6 +59,7 @@ export function mapWPPost(
     excerpt: stripHtml(post.excerpt.rendered) || stripHtml(post.content.rendered).slice(0, 220),
     author: authorName(post),
     dateDisplay: formatDate(post.date),
+    dateIso: post.date,
     readMinutes: estimateReadMinutes(post.content.rendered || post.excerpt.rendered),
     categoryLabel,
     imageUrl: featuredImageUrl(post),

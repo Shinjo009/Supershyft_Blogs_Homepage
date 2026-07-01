@@ -8,26 +8,24 @@ type Props = {
 
 export function CategoryStrip({ categories, selectedCategoryId, onSelect }: Props) {
   return (
-    <div className="hi-filters">
-      <div className="hi-filters__inner hi-shell">
+    <div className="hi-category-bar" role="group" aria-label="Filter by category">
+      <button
+        type="button"
+        className={`hi-pill${selectedCategoryId === null ? ' hi-pill--active' : ''}`}
+        onClick={() => onSelect(null)}
+      >
+        All
+      </button>
+      {categories.map((c) => (
         <button
+          key={c.id}
           type="button"
-          className={`hi-pill${selectedCategoryId === null ? ' hi-pill--active' : ''}`}
-          onClick={() => onSelect(null)}
+          className={`hi-pill${selectedCategoryId === c.id ? ' hi-pill--active' : ''}`}
+          onClick={() => onSelect(c.id)}
         >
-          All
+          {c.name}
         </button>
-        {categories.map((c) => (
-          <button
-            key={c.id}
-            type="button"
-            className={`hi-pill${selectedCategoryId === c.id ? ' hi-pill--active' : ''}`}
-            onClick={() => onSelect(c.id)}
-          >
-            {c.name}
-          </button>
-        ))}
-      </div>
+      ))}
     </div>
   )
 }

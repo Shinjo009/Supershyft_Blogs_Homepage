@@ -1,16 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
-import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DEMO_CATEGORIES, filterDemoByCategory } from '../data/demoFeed'
 import { mapWPPost } from '../lib/wp/mapWPPost'
 import { fetchCategories, fetchPosts, sortPostsForHome } from '../lib/wp/wpClient'
-import type { BlogCategory, BlogPost } from '../types/blog'
+import type { BlogCategory } from '../types/blog'
 
 const CATEGORY_ORDER = [
-  'metabolic-health',
   'nutrition',
+  'bio-ai',
+  'founders-story',
+  'metabolic-health',
   'risk-prediction',
   'lifestyle',
   'research',
+  'uncategorized',
 ]
 
 /** Live site default when `VITE_WP_API_BASE` is not set. */
@@ -42,7 +45,6 @@ function getEffectiveWpApiBase(): string {
 
 export function useHomeFeed() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
-  const defaultCategoryApplied = useRef(false)
   const demoMode = isDemoMode()
   const apiBase = getEffectiveWpApiBase()
 
@@ -78,46 +80,11 @@ export function useHomeFeed() {
     }
   }, [selectedCategoryId])
 
-  /** Match reference: first available pill in design order is active (not "All"). */
-  useEffect(() => {
-    if (defaultCategoryApplied.current) {
-      return
-    }
-    if (!demoMode && wpQuery.isPending) {
-      return
-    }
-    const cats = demoMode ? demo.categories : (wpQuery.data?.categories ?? [])
-    if (cats.length === 0) {
-      if (!demoMode && (wpQuery.isFetched || wpQuery.isError)) {
-        defaultCategoryApplied.current = true
-      }
-      return
-    }
-    const slug = CATEGORY_ORDER.find((s) => cats.some((c) => c.slug === s))
-    const match = slug ? cats.find((c) => c.slug === slug) : null
-    if (match) {
-      startTransition(() => {
-        setSelectedCategoryId(match.id)
-      })
-    }
-    defaultCategoryApplied.current = true
-  }, [
-    demoMode,
-    demo.categories,
-    wpQuery.data?.categories,
-    wpQuery.isPending,
-    wpQuery.isFetched,
-    wpQuery.isError,
-  ])
-
   const loading = !demoMode && wpQuery.isPending
   const error = !demoMode && wpQuery.isError ? wpQuery.error : null
 
   const categories = demoMode ? demo.categories : (wpQuery.data?.categories ?? [])
-  const allPosts = demoMode ? demo.posts : (wpQuery.data?.posts ?? [])
-
-  const featured = allPosts[0] ?? null
-  const latest: BlogPost[] = featured ? allPosts.filter((p) => p.id !== featured.id).slice(0, 6) : []
+  const posts = demoMode ? demo.posts : (wpQuery.data?.posts ?? [])
 
   return {
     demoMode,
@@ -126,8 +93,7 @@ export function useHomeFeed() {
     categories,
     selectedCategoryId,
     setSelectedCategoryId,
-    featured,
-    latest,
+    posts,
     refetch: wpQuery.refetch,
   }
 }

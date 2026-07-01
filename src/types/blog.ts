@@ -4,6 +4,7 @@ export type BlogPost = {
   excerpt: string
   author: string
   dateDisplay: string
+  dateIso: string
   readMinutes: number
   categoryLabel: string
   imageUrl: string
