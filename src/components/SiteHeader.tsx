@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useId, useState } from 'react'
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import fitnasticLogo from '../assets/Fitnastic logo.svg'
-import { HERO_ILLUSTRATION_ASPECT, HERO_SLIDES, type HeroTitleLine } from '../data/heroSlides'
+import { HERO_SLIDES, type HeroTitleLine } from '../data/heroSlides'
 import { useHeroCarousel } from '../hooks/useHeroCarousel'
 import { getSiteNav } from '../lib/siteNav'
 import { SiteNavLinks } from './SiteNavLinks'
@@ -20,6 +20,23 @@ const HERO_TOPICS = [
 
 const HERO_SUBTITLE =
   'Explore evidence-based insights on nutrition, blood health, longevity, sleep, and everyday wellness.'
+
+function useMobileNavLayout() {
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_NAV_QUERY).matches)
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_NAV_QUERY)
+    const onChange = () => setIsMobile(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  return isMobile
+}
+
+function slideTitleLines(slide: (typeof HERO_SLIDES)[number], isMobile: boolean) {
+  return isMobile && slide.mobileTitleLines ? slide.mobileTitleLines : slide.titleLines
+}
 
 function HeroTitle({ lines }: { lines: HeroTitleLine[] }) {
   return (
@@ -48,15 +65,78 @@ function HeroTitle({ lines }: { lines: HeroTitleLine[] }) {
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const isMobileLayout = useMobileNavLayout()
   const { activeSlide, setActiveSlide } = useHeroCarousel()
   const navId = useId()
   const slideCount = HERO_SLIDES.length
   const slideWidthPercent = 100 / slideCount
-  const trackStyle = {
+  const titleTrackStyle = {
     width: `${slideCount * 100}%`,
     transform: `translate3d(-${activeSlide * slideWidthPercent}%, 0, 0)`,
   }
-  const panelStyle = { width: `${slideWidthPercent}%` }
+  const titlePanelStyle = { width: `${slideWidthPercent}%` }
+  const titleCarouselRef = useRef<HTMLDivElement>(null)
+  const illustrationCarouselRef = useRef<HTMLDivElement>(null)
+  const [illustrationOffsetPx, setIllustrationOffsetPx] = useState(0)
+
+  const syncCarouselHeights = useCallback(() => {
+    const isMobile = window.matchMedia(MOBILE_NAV_QUERY).matches
+
+    const titleCarousel = titleCarouselRef.current
+    if (titleCarousel) {
+      if (!isMobile) {
+        titleCarousel.style.height = ''
+      } else {
+        const panels = titleCarousel.querySelectorAll<HTMLElement>('.hi-hero__title-panel')
+        const activePanel = panels[activeSlide]
+        titleCarousel.style.height =
+          activePanel && activePanel.scrollHeight > 0 ? `${activePanel.scrollHeight}px` : ''
+      }
+    }
+
+    const illustrationCarousel = illustrationCarouselRef.current
+    if (illustrationCarousel) {
+      if (!isMobile) {
+        illustrationCarousel.style.height = ''
+        setIllustrationOffsetPx(0)
+      } else {
+        const panels = illustrationCarousel.querySelectorAll<HTMLElement>('.hi-hero__illustration-panel')
+        const activePanel = panels[activeSlide]
+        const activeImage = activePanel?.querySelector('.hi-hero__illustration')
+        const imageHeight =
+          activeImage instanceof HTMLImageElement && activeImage.offsetHeight > 0
+            ? activeImage.offsetHeight
+            : activePanel?.scrollHeight ?? 0
+        illustrationCarousel.style.height = imageHeight > 0 ? `${imageHeight}px` : ''
+
+        const panelWidth = panels[0]?.getBoundingClientRect().width ?? illustrationCarousel.clientWidth
+        setIllustrationOffsetPx(activeSlide * panelWidth)
+      }
+    }
+  }, [activeSlide])
+
+  const illustrationTrackStyle = isMobileLayout
+    ? { transform: `translate3d(-${illustrationOffsetPx}px, 0, 0)` }
+    : {
+        width: `${slideCount * 100}%`,
+        transform: `translate3d(-${activeSlide * slideWidthPercent}%, 0, 0)`,
+      }
+
+  const illustrationPanelStyle = isMobileLayout ? undefined : { width: `${slideWidthPercent}%` }
+
+  useLayoutEffect(() => {
+    syncCarouselHeights()
+    const raf = window.requestAnimationFrame(syncCarouselHeights)
+    const fontsReady = document.fonts?.ready
+    if (fontsReady) {
+      void fontsReady.then(syncCarouselHeights)
+    }
+    window.addEventListener('resize', syncCarouselHeights)
+    return () => {
+      window.cancelAnimationFrame(raf)
+      window.removeEventListener('resize', syncCarouselHeights)
+    }
+  }, [activeSlide, isMobileLayout, syncCarouselHeights])
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
@@ -101,30 +181,6 @@ export function SiteHeader() {
         />
       </div>
 
-      <div className="hi-hero__illustration-carousel">
-        <div className="hi-hero__illustration-track" style={trackStyle}>
-          {HERO_SLIDES.map((slide, index) => (
-            <div
-              key={slide.id}
-              className="hi-hero__illustration-panel"
-              style={panelStyle}
-              aria-hidden={index !== activeSlide}
-            >
-              <div className="hi-hero__illustration-wrap">
-                <img
-                  className="hi-hero__illustration"
-                  src={slide.illustrationSrc}
-                  alt=""
-                  decoding="async"
-                  loading="eager"
-                  style={{ aspectRatio: HERO_ILLUSTRATION_ASPECT }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="hi-hero__overlay" aria-hidden />
 
       <div className="hi-hero__frame">
@@ -156,19 +212,16 @@ export function SiteHeader() {
             <div className="hi-hero__copy-main">
               <p className="hi-hero__eyebrow">HEALTH INSIGHTS</p>
 
-              <div className="hi-hero__title-carousel">
-                <div
-                  className="hi-hero__title-track"
-                  style={trackStyle}
-                >
+              <div className="hi-hero__title-carousel" ref={titleCarouselRef}>
+                <div className="hi-hero__title-track" style={titleTrackStyle}>
                   {HERO_SLIDES.map((slide, index) => (
                     <div
                       key={slide.id}
                       className="hi-hero__title-panel"
-                      style={panelStyle}
+                      style={titlePanelStyle}
                       aria-hidden={index !== activeSlide}
                     >
-                      <HeroTitle lines={slide.titleLines} />
+                      <HeroTitle lines={slideTitleLines(slide, isMobileLayout)} />
                     </div>
                   ))}
                 </div>
@@ -184,6 +237,36 @@ export function SiteHeader() {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+
+        <div className="hi-hero__illustration-carousel" ref={illustrationCarouselRef}>
+          <div className="hi-hero__illustration-track" style={illustrationTrackStyle}>
+            {HERO_SLIDES.map((slide, index) => (
+              <div
+                key={slide.id}
+                className="hi-hero__illustration-panel"
+                style={illustrationPanelStyle}
+                aria-hidden={index !== activeSlide}
+              >
+                <div
+                  className={`hi-hero__illustration-wrap${
+                    slide.id === 'small-steps' ? ' hi-hero__illustration-wrap--floor' : ''
+                  }`}
+                >
+                  <img
+                    className="hi-hero__illustration"
+                    src={slide.illustrationSrc}
+                    alt=""
+                    width={slide.illustrationWidth}
+                    height={slide.illustrationHeight}
+                    decoding="async"
+                    loading="eager"
+                    onLoad={syncCarouselHeights}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

@@ -14,7 +14,7 @@ export function CardArrowIcon({ className }: Props) {
       aria-hidden
     >
       <path
-        d="M6.5 19.5L19.5 6.5M19.5 6.5H9.75M19.5 6.5V16.25"
+        d="M13 6V20M13 6L7.5 11.5M13 6L18.5 11.5"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
