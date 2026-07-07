@@ -27,7 +27,7 @@ body {
   --hi-footer-inner-max: 1360px;
   --hi-design-width: 1440px;
   --hi-hero-height: 788px;
-  --hi-section-gap: 68px;
+  --hi-section-gap: 40px;
   /* Slight zoom-out on desktop — keeps Figma layout, scales down ~10% */
   --hi-scale-max: 0.9;
   --color-ink: #111111;
@@ -87,9 +87,28 @@ body {
   width: 100%;
   max-width: var(--hi-design-width);
   margin: 0 auto;
-  padding: var(--hi-section-gap) 100px 60px;
+  padding-top: var(--hi-section-gap);
+  padding-right: 100px;
+  padding-bottom: 60px;
+  padding-left: 100px;
   box-sizing: border-box;
   background: #fff;
+}
+
+.hi-category-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin: 0;
+}
+
+.hi-articles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hi-section-gap);
+  width: 100%;
+  margin: 0;
 }
 
 .hi-shell {
@@ -511,6 +530,7 @@ body {
 
   .hi-hero {
     --hi-hero-mobile-gap: 0.5rem;
+    --hi-hero-logo-eyebrow-gap: 2rem;
   }
 
   .hi-hero__overlay {
@@ -552,7 +572,9 @@ body {
     position: relative;
     inset: auto;
     z-index: 1;
-    width: 100%;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
     height: auto;
     flex: 0 0 auto;
     margin-top: 0;
@@ -563,8 +585,8 @@ body {
   }
 
   .hi-hero__illustration-track {
-    height: auto;
-    align-items: flex-start;
+    height: 100%;
+    align-items: flex-end;
     width: 100%;
   }
 
@@ -573,10 +595,13 @@ body {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
-    height: auto;
-    align-self: flex-start;
+    height: 100%;
+    align-self: flex-end;
     overflow: hidden;
     box-sizing: border-box;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 
   .hi-hero__illustration-wrap {
@@ -585,26 +610,39 @@ body {
     left: auto;
     right: auto;
     bottom: auto;
-    height: auto;
-    padding: 0 clamp(1rem, 3vw, 1.25rem);
-    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 
   .hi-hero__illustration-wrap--floor {
-    align-items: flex-start;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+
+  .hi-hero__illustration-wrap--complex .hi-hero__illustration {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    object-fit: initial;
+    object-position: right bottom;
   }
 
   .hi-hero__illustration-wrap--floor .hi-hero__illustration,
   .hi-hero__illustration {
     width: 100%;
-    max-width: min(100%, 440px);
-    height: auto;
-    max-height: none;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
     object-fit: contain;
-    object-position: center top;
+    object-position: right bottom;
     opacity: 1;
     display: block;
-    margin: 0 auto;
+    margin: 0;
   }
 
   .hi-navbar__shell {
@@ -619,19 +657,17 @@ body {
   }
 
   .hi-hero__dots {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    transform: none;
+    position: absolute;
+    left: 50%;
+    bottom: max(10px, env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
     z-index: 4;
-    flex: 0 0 auto;
-    width: 100%;
-    margin: 0.375rem auto 0;
-    padding: 0 0 max(0.5rem, env(safe-area-inset-bottom, 0px));
+    width: auto;
+    margin: 0;
+    padding: 0;
   }
 
   .hi-hero__copy {
-    margin-top: var(--hi-hero-mobile-gap);
     margin-left: 0;
     max-width: 100%;
     width: 100%;
@@ -680,10 +716,10 @@ body {
   }
 
   .hi-hero__eyebrow {
-    font-size: 0.75rem;
+    font-size: 1.0625rem;
     line-height: 1.2;
     margin: 0;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.35px;
     width: 100%;
   }
 
@@ -723,9 +759,11 @@ body {
 
   .hi-hero__topic {
     font-size: 0.72rem;
-    padding: 0.38rem 0.7rem;
-    border-radius: 8px;
+    padding: 0.36rem 0.66rem;
+    border-radius: 7px;
     line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: 0.45px;
   }
 
   .hi-nav-toggle {
@@ -803,7 +841,6 @@ body {
 }
 
 .hi-hero__copy {
-  margin-top: 0;
   margin-bottom: 0;
   margin-left: 0;
   padding-top: 0;
@@ -820,6 +857,15 @@ body {
   .hi-hero__copy {
     margin-top: 71px;
     margin-left: 11px;
+  }
+}
+
+/* Mobile logo → HEALTH INSIGHTS spacing must follow base copy rules */
+@media (max-width: 720px) {
+  .hi-hero__copy {
+    margin-top: var(--hi-hero-logo-eyebrow-gap);
+    margin-left: 0;
+    max-width: 100%;
   }
 }
 
@@ -840,6 +886,14 @@ body {
   line-height: 25px;
   letter-spacing: 2px;
   text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .hi-hero__eyebrow {
+    font-size: 1.0625rem;
+    line-height: 1.2;
+    letter-spacing: 1.35px;
+  }
 }
 
 .hi-hero__title {
@@ -938,11 +992,14 @@ body {
   line-height: 14px;
 }
 
-.hi-category-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
+@media (max-width: 720px) {
+  .hi-hero__topic {
+    font-size: 0.72rem;
+    padding: 0.36rem 0.66rem;
+    border-radius: 7px;
+    line-height: 1.15;
+    letter-spacing: 0.45px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1041,13 +1098,6 @@ body {
   background: #fff1f2;
 }
 
-.hi-articles {
-  display: flex;
-  flex-direction: column;
-  gap: 68px;
-  width: 100%;
-}
-
 .hi-articles__title {
   margin: 0;
   font-family: var(--font-display);
@@ -1082,7 +1132,7 @@ body {
   .hi-content {
     padding-left: clamp(2rem, 5vw, 3.5rem);
     padding-right: clamp(2rem, 5vw, 3.5rem);
-    --hi-section-gap: clamp(2.5rem, 4vw, 3.5rem);
+    --hi-section-gap: 2rem;
   }
 
   .hi-hero__inner {
@@ -1105,10 +1155,12 @@ body {
 
   .hi-content {
     width: 100%;
-    --hi-section-gap: clamp(1.5rem, 5vw, 2.25rem);
+    --hi-section-gap: 1.5rem;
     gap: var(--hi-section-gap);
-    padding: var(--hi-section-gap) max(1rem, env(safe-area-inset-left, 0px)) max(2rem, env(safe-area-inset-bottom, 0px))
-      max(1rem, env(safe-area-inset-right, 0px));
+    padding-top: var(--hi-section-gap);
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+    padding-bottom: max(2rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
   }
 
   .hi-category-bar {
@@ -1139,7 +1191,7 @@ body {
   }
 
   .hi-articles {
-    gap: clamp(1.25rem, 4vw, 1.75rem);
+    gap: var(--hi-section-gap);
   }
 
   .hi-articles__title {

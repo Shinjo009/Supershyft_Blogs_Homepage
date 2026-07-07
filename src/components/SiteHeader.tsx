@@ -82,15 +82,45 @@ export function SiteHeader() {
   const syncCarouselHeights = useCallback(() => {
     const isMobile = window.matchMedia(MOBILE_NAV_QUERY).matches
 
+    const measureMaxPanelHeight = (panels: NodeListOf<HTMLElement>, indices?: number[]) => {
+      const panelList = indices ? indices.map((index) => panels[index]).filter(Boolean) : [...panels]
+      let maxHeight = 0
+      panelList.forEach((panel) => {
+        if (panel) {
+          maxHeight = Math.max(maxHeight, panel.scrollHeight)
+        }
+      })
+      return maxHeight
+    }
+
+    const measureMaxImageHeight = (panels: NodeListOf<HTMLElement>, indices?: number[]) => {
+      const panelList = indices ? indices.map((index) => panels[index]).filter(Boolean) : [...panels]
+      let maxHeight = 0
+      panelList.forEach((panel) => {
+        if (!panel) {
+          return
+        }
+        const image = panel.querySelector('.hi-hero__illustration')
+        if (image instanceof HTMLImageElement && image.offsetHeight > 0) {
+          maxHeight = Math.max(maxHeight, image.offsetHeight)
+        } else {
+          maxHeight = Math.max(maxHeight, panel.scrollHeight)
+        }
+      })
+      return maxHeight
+    }
+
+    // Match slides 1 and 3 — slide 2 uses the same hero footprint on mobile.
+    const mobileReferenceSlideIndices = [0, 2]
+
     const titleCarousel = titleCarouselRef.current
     if (titleCarousel) {
       if (!isMobile) {
         titleCarousel.style.height = ''
       } else {
         const panels = titleCarousel.querySelectorAll<HTMLElement>('.hi-hero__title-panel')
-        const activePanel = panels[activeSlide]
-        titleCarousel.style.height =
-          activePanel && activePanel.scrollHeight > 0 ? `${activePanel.scrollHeight}px` : ''
+        const maxHeight = measureMaxPanelHeight(panels, mobileReferenceSlideIndices)
+        titleCarousel.style.height = maxHeight > 0 ? `${maxHeight}px` : ''
       }
     }
 
@@ -101,13 +131,8 @@ export function SiteHeader() {
         setIllustrationOffsetPx(0)
       } else {
         const panels = illustrationCarousel.querySelectorAll<HTMLElement>('.hi-hero__illustration-panel')
-        const activePanel = panels[activeSlide]
-        const activeImage = activePanel?.querySelector('.hi-hero__illustration')
-        const imageHeight =
-          activeImage instanceof HTMLImageElement && activeImage.offsetHeight > 0
-            ? activeImage.offsetHeight
-            : activePanel?.scrollHeight ?? 0
-        illustrationCarousel.style.height = imageHeight > 0 ? `${imageHeight}px` : ''
+        const maxImageHeight = measureMaxImageHeight(panels, mobileReferenceSlideIndices)
+        illustrationCarousel.style.height = maxImageHeight > 0 ? `${maxImageHeight}px` : ''
 
         const panelWidth = panels[0]?.getBoundingClientRect().width ?? illustrationCarousel.clientWidth
         setIllustrationOffsetPx(activeSlide * panelWidth)
@@ -252,7 +277,7 @@ export function SiteHeader() {
                 <div
                   className={`hi-hero__illustration-wrap${
                     slide.id === 'small-steps' ? ' hi-hero__illustration-wrap--floor' : ''
-                  }`}
+                  }${slide.id === 'health-complex' ? ' hi-hero__illustration-wrap--complex' : ''}`}
                 >
                   <img
                     className="hi-hero__illustration"

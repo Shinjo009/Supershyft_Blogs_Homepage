@@ -41,11 +41,6 @@ export const HERO_SLIDES: HeroSlide[] = [
       { parts: [{ text: 'Health Is Complex.' }] },
       { parts: [{ text: "Understanding It Shouldn't Be.", bold: true }] },
     ],
-    mobileTitleLines: [
-      { parts: [{ text: 'Health Is Complex.' }] },
-      { parts: [{ text: 'Understanding It' }] },
-      { parts: [{ text: "Shouldn't Be.", bold: true }] },
-    ],
   },
   {
     id: 'what-age',
