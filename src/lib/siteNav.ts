@@ -3,6 +3,7 @@ export const NAV_DEFAULTS = {
   ourTech: 'https://www.supershyft.com/technology.html',
   ourStory: 'https://www.supershyft.com/our-story.html',
   contact: 'https://www.supershyft.com/contact-us.html',
+  blogs: 'https://blog.supershyft.com/',
 } as const
 
 export const SOCIAL_DEFAULTS = {
@@ -15,6 +16,7 @@ export const SITE_NAV_ITEMS = [
   { label: 'Our Tech', hrefKey: 'ourTech' as const },
   { label: 'Our Story', hrefKey: 'ourStory' as const },
   { label: 'Contact Us', hrefKey: 'contact' as const },
+  { label: 'Blogs', hrefKey: 'blogs' as const },
 ] as const
 
 export function getSiteNav() {
@@ -26,6 +28,7 @@ export function getSiteNav() {
       import.meta.env.VITE_NAV_ABOUT?.trim() ||
       NAV_DEFAULTS.ourStory,
     contact: import.meta.env.VITE_NAV_CONTACT?.trim() || NAV_DEFAULTS.contact,
+    blogs: import.meta.env.VITE_NAV_BLOGS?.trim() || NAV_DEFAULTS.blogs,
   }
 }
 

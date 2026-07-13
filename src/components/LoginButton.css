@@ -1,0 +1,43 @@
+.login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  color: #fff;
+  background: linear-gradient(90deg, #cc203b 0%, #fa3a58 100%);
+  transition: all 0.5s ease;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  font-size: 16px;
+  padding: 6px 16px;
+  line-height: 1.2;
+  margin-top: 0;
+}
+
+.login-btn:hover {
+  background: linear-gradient(180deg, #fa3a58 0%, #cc203b 100%);
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+@media (max-width: 991.98px) {
+  .login-btn {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 32px;
+    line-height: 1.2;
+    border-radius: 999px;
+    margin-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-btn {
+    transition: none;
+  }
+}

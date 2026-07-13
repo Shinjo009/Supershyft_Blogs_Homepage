@@ -4,6 +4,7 @@ import { HERO_SLIDES, type HeroTitleLine } from '../data/heroSlides'
 import { useHeroCarousel } from '../hooks/useHeroCarousel'
 import { getSiteNav } from '../lib/siteNav'
 import { SiteNavLinks } from './SiteNavLinks'
+import { LoginButton } from './LoginButton'
 
 const nav = getSiteNav()
 
@@ -229,7 +230,10 @@ export function SiteHeader() {
                 </span>
                 <span className="hi-nav-toggle__label">{menuOpen ? 'Close menu' : 'Open menu'}</span>
               </button>
-              <SiteNavLinks id={navId} ariaLabel="Primary" onLinkClick={closeMenu} />
+              <div className="hi-navbar__actions" id={navId}>
+                <SiteNavLinks ariaLabel="Primary" onLinkClick={closeMenu} />
+                <LoginButton onClick={closeMenu} />
+              </div>
             </div>
           </div>
 
