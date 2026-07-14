@@ -1,5 +1,5 @@
 import footerLine from '../assets/Line 5.svg'
-import footerLogo from '../assets/Logo.svg'
+import footerLogo from '../assets/Fitnastic_logo.svg'
 import {
   FooterInstagramIcon,
   FooterLinkedinIcon,
